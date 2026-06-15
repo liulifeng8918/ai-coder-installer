@@ -1,0 +1,62 @@
+{
+  "name": "ai-coder-installer",
+  "version": "0.1.0",
+  "description": "Windows one-click installer for Codex AI client with CC Switch and Agnes defaults.",
+  "main": "main.js",
+  "author": "AI Coder Installer",
+  "license": "SEE LICENSE IN LICENSE",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "check": "node --check main.js && node --check preload.js && node --check scripts/obfuscate.js && node --check scripts/build.js",
+    "build": "node scripts/build.js"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.aicoder.installer",
+    "productName": "AI Coder Installer",
+    "asar": true,
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "README.md",
+      "node_modules/sql.js/**/*"
+    ],
+    "asarUnpack": [
+      "node_modules/sql.js/dist/sql-wasm.wasm"
+    ],
+    "extraResources": [
+      {
+        "from": "resources",
+        "to": "resources",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "portable": {
+      "artifactName": "AI-Coder-Installer-${version}-${arch}.${ext}"
+    }
+  },
+  "dependencies": {
+    "sql.js": "^1.14.1"
+  }
+}

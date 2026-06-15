@@ -1,0 +1,1229 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codex 一键安装工具</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #eef6ff;
+      --panel: #ffffff;
+      --soft: #f7fbff;
+      --soft-blue: #eef5ff;
+      --line: #d8e2ef;
+      --line-strong: #afc4df;
+      --text: #111827;
+      --muted: #5f6f84;
+      --blue: #1769e0;
+      --blue-strong: #0d56c2;
+      --green: #1fa65a;
+      --green-soft: #edf9f2;
+      --red: #b42318;
+      --red-soft: #fff1f0;
+      --shadow: 0 18px 42px rgba(18, 45, 84, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f8fcff 0%, var(--bg) 100%);
+      overflow: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+    }
+
+    .app {
+      height: 100vh;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .topbar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      color: #fff;
+      background: linear-gradient(180deg, #1173f0 0%, #0d5ed5 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, .22);
+      flex: 0 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, .2);
+      border: 1px solid rgba(255, 255, 255, .4);
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .brand-title {
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-note {
+      font-size: 12px;
+      opacity: .9;
+      white-space: nowrap;
+    }
+
+    .content {
+      flex: 1;
+      min-height: 0;
+      padding: 18px 18px 10px;
+      overflow: auto;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: 26px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 18px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin-bottom: 4px;
+      font-size: 15px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.62;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .welcome-card {
+      padding: 22px 28px 18px;
+    }
+
+    .welcome-head {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .welcome-head .subtitle {
+      margin: 0;
+      color: #2d3748;
+      font-size: 17px;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .product-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 54px 1fr 26px;
+      gap: 12px;
+      align-items: center;
+      min-height: 92px;
+      padding: 14px 18px;
+      border: 1px solid var(--blue);
+      border-radius: 8px;
+      background: #fbfdff;
+      box-shadow: 0 12px 26px rgba(23, 105, 224, .12);
+      cursor: default;
+      user-select: none;
+    }
+
+    .cube-icon {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #1674f2, #0d56c2);
+      color: #fff;
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .product-title {
+      margin-bottom: 6px;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .product-copy {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .selected-check {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .automation-card {
+      margin-top: 18px;
+      padding: 14px 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .auto-row {
+      display: grid;
+      grid-template-columns: 26px 132px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 7px 0;
+      border-top: 1px solid #eef2f7;
+    }
+
+    .auto-row:first-of-type {
+      border-top: 0;
+    }
+
+    .auto-check {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(31, 166, 90, .55);
+      border-radius: 6px;
+      color: var(--green);
+      font-weight: 900;
+      font-size: 12px;
+      background: var(--green-soft);
+    }
+
+    .auto-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .auto-copy {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .welcome-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 14px;
+      color: #40516a;
+      font-size: 13px;
+    }
+
+    .progress-page {
+      display: grid;
+      gap: 16px;
+    }
+
+    .page-heading {
+      text-align: center;
+      padding-top: 8px;
+    }
+
+    .page-heading h1 {
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+
+    .install-shell {
+      display: grid;
+      grid-template-columns: 174px minmax(0, 1fr);
+      min-height: 430px;
+      overflow: hidden;
+    }
+
+    .steps {
+      padding: 18px 12px;
+      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 9px;
+      align-items: start;
+      padding: 10px 8px;
+      border-radius: 8px;
+      color: var(--muted);
+    }
+
+    .step + .step {
+      margin-top: 6px;
+    }
+
+    .dot {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #e6edf5;
+      color: #7a8798;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .step-name {
+      color: #263447;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .step-note,
+    .step-msg {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .step.active {
+      background: var(--soft-blue);
+      color: var(--blue);
+    }
+
+    .step.active .dot {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .step.active .step-name,
+    .step.active .step-msg {
+      color: var(--blue-strong);
+    }
+
+    .step.done .dot {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .step.warn .dot,
+    .step.error .dot {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .log-panel {
+      min-width: 0;
+      padding: 18px;
+    }
+
+    .log-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .log-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .current-action {
+      color: var(--blue-strong);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .log {
+      height: 312px;
+      padding: 12px 14px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdff;
+      color: #263447;
+      font-family: Consolas, "Cascadia Mono", "Microsoft YaHei", monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .log .err {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .progress-footer {
+      padding: 14px 18px 16px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .progress-topline {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: #37465b;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .bar {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e6edf5;
+    }
+
+    .bar-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #0d63df, #2282f4);
+      transition: width .25s ease;
+    }
+
+    .progress-caption {
+      margin-top: 12px;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .finish-page {
+      display: grid;
+      gap: 14px;
+    }
+
+    .finish-hero {
+      padding: 28px 24px 22px;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 12px;
+      border: 3px solid var(--green);
+      border-radius: 999px;
+      color: var(--green);
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .finish-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .action-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 62px;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      color: var(--blue);
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(18, 45, 84, .12);
+    }
+
+    .action-card.primary {
+      border-color: var(--blue);
+      background: linear-gradient(180deg, #1975f1 0%, #0d5fd6 100%);
+      color: #fff;
+    }
+
+    .action-icon {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .ready-card {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      border: 1px solid #b9e3c8;
+      background: var(--green-soft);
+      box-shadow: none;
+    }
+
+    .server-icon {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .ready-title {
+      margin-bottom: 4px;
+      color: #0e5f33;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .ready-copy {
+      color: #40516a;
+      font-size: 12px;
+    }
+
+    .ready-badge {
+      padding: 6px 10px;
+      border: 1px solid #abdcbf;
+      border-radius: 999px;
+      color: #168348;
+      background: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .support-panel {
+      padding: 18px;
+      box-shadow: none;
+    }
+
+    .support-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 128px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .support-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .support-row {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      padding: 0;
+      color: inherit;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .support-row[disabled] {
+      cursor: default;
+    }
+
+    .support-row:not([disabled]):hover .support-title {
+      color: var(--blue);
+    }
+
+    .support-icon {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      color: var(--blue);
+      background: var(--soft-blue);
+      font-weight: 900;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .support-title {
+      color: #263447;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .support-detail {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .support-qr {
+      padding-left: 16px;
+      border-left: 1px solid var(--line);
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .support-qr img {
+      display: block;
+      width: 108px;
+      height: 108px;
+      object-fit: contain;
+      margin: 0 auto 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .alert-inline {
+      padding: 12px 14px;
+      border: 1px solid #ffd8a8;
+      border-radius: 8px;
+      background: #fff8eb;
+      color: #965a00;
+      font-size: 13px;
+      line-height: 1.5;
+      box-shadow: none;
+    }
+
+    .failure-card {
+      padding: 32px 28px;
+    }
+
+    .footer {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 0 26px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, .9);
+      flex: 0 0 auto;
+    }
+
+    .status-text {
+      margin-right: auto;
+      color: #52637a;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .btn {
+      min-width: 104px;
+      height: 38px;
+      padding: 0 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      color: #0f2744;
+      background: #fff;
+      cursor: pointer;
+      transition: background .12s ease, border-color .12s ease, color .12s ease;
+    }
+
+    .btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .btn-primary {
+      border-color: var(--blue);
+      color: #fff;
+      background: linear-gradient(180deg, #1975f1 0%, #0d5fd6 100%);
+      font-weight: 800;
+    }
+
+    .btn-primary:hover {
+      color: #fff;
+      border-color: var(--blue-strong);
+      background: var(--blue-strong);
+    }
+
+    .btn:disabled {
+      opacity: .62;
+      cursor: default;
+    }
+
+    @media (max-width: 540px) {
+      body {
+        overflow: auto;
+      }
+
+      .top-note {
+        display: none;
+      }
+
+      .content {
+        padding: 18px;
+      }
+
+      .install-shell,
+      .finish-actions,
+      .support-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .support-qr {
+        padding-left: 0;
+        border-left: 0;
+      }
+
+      .auto-row {
+        grid-template-columns: 26px 1fr;
+      }
+
+      .auto-copy {
+        grid-column: 2;
+      }
+
+      .footer {
+        height: auto;
+        min-height: 64px;
+        flex-wrap: wrap;
+        padding: 12px 18px;
+      }
+
+      .status-text {
+        flex: 1 0 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">▣</div>
+        <div class="brand-title">Codex 一键安装工具</div>
+      </div>
+      <div class="top-note">开源免费 · 一键部署 · Windows 10/11 x64</div>
+    </div>
+
+    <main class="content">
+      <section id="welcome-view" class="panel welcome-card">
+        <div class="welcome-head">
+          <h1>Codex 一键安装工具</h1>
+          <p class="subtitle">开源免费，一键部署</p>
+        </div>
+
+        <div class="section-title">准备安装 Codex AI客户端</div>
+        <div class="product-card" aria-label="Codex AI客户端已选择">
+          <div class="cube-icon">▣</div>
+          <div>
+            <div class="product-title">Codex AI客户端</div>
+            <div class="product-copy">GPT智能工作台，自动工作首选</div>
+          </div>
+          <div class="selected-check" aria-hidden="true">✓</div>
+        </div>
+
+        <div class="automation-card">
+          <h2>我们为你自动完成</h2>
+          <div class="auto-row">
+            <div class="auto-check">✓</div>
+            <div class="auto-title">自动检查环境</div>
+            <div class="auto-copy">检测网络、Windows 版本和安装通道</div>
+          </div>
+          <div class="auto-row">
+            <div class="auto-check">✓</div>
+            <div class="auto-title">安装基础依赖</div>
+            <div class="auto-copy">自动准备 winget、Node.js 等组件</div>
+          </div>
+          <div class="auto-row">
+            <div class="auto-check">✓</div>
+            <div class="auto-title">配置 CC Switch</div>
+            <div class="auto-copy">导入 Agnes，并开启本地路由</div>
+          </div>
+          <div class="auto-row">
+            <div class="auto-check">✓</div>
+            <div class="auto-title">日志可查看</div>
+            <div class="auto-copy">安装过程和错误信息全程透明</div>
+          </div>
+        </div>
+
+        <div class="welcome-meta">
+          <div>GitHub：待审核通过</div>
+          <div>作者实名刘力峰</div>
+        </div>
+      </section>
+
+      <section id="progress-view" class="progress-page hidden">
+        <div class="page-heading">
+          <h1>正在安装</h1>
+          <p class="lead">请耐心等待，安装过程将自动完成</p>
+        </div>
+
+        <div class="panel install-shell">
+          <div class="steps">
+            <div id="step-preflight" class="step">
+              <div class="dot">1</div>
+              <div><div class="step-name">检查环境</div><div class="step-msg">等待检查</div></div>
+            </div>
+            <div id="step-deps" class="step">
+              <div class="dot">2</div>
+              <div><div class="step-name">安装基础依赖</div><div class="step-msg">等待安装</div></div>
+            </div>
+            <div id="step-target" class="step">
+              <div class="dot">3</div>
+              <div><div class="step-name">安装 Codex</div><div class="step-msg">等待安装</div></div>
+            </div>
+            <div id="step-ccswitch" class="step">
+              <div class="dot">4</div>
+              <div>
+                <div class="step-name">安装 CC-Switch</div>
+                <div class="step-note">管理切换大模型</div>
+                <div class="step-msg">等待安装</div>
+              </div>
+            </div>
+            <div id="step-agnes" class="step">
+              <div class="dot">5</div>
+              <div>
+                <div class="step-name">配置大模型</div>
+                <div class="step-note">内置免费模型 Agnes</div>
+                <div class="step-msg">等待配置</div>
+              </div>
+            </div>
+            <div id="step-verify" class="step">
+              <div class="dot">6</div>
+              <div><div class="step-name">验证结果</div><div class="step-msg">等待验证</div></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="log-panel">
+              <div class="log-head">
+                <div class="log-title">安装日志</div>
+                <div id="current-action" class="current-action">准备开始安装</div>
+              </div>
+              <div id="log" class="log" aria-live="polite"></div>
+            </div>
+            <div class="progress-footer">
+              <div class="progress-topline">
+                <span>总体进度</span>
+                <span id="progress-value">0%</span>
+              </div>
+              <div class="bar"><div id="progress-fill" class="bar-fill"></div></div>
+              <div id="progress-caption" class="progress-caption">准备开始安装</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="finish-view" class="finish-page hidden">
+        <div class="panel finish-hero">
+          <div class="success-icon">✓</div>
+          <h1>安装完成</h1>
+          <p id="finish-sub" class="lead">所有组件已成功安装并配置</p>
+        </div>
+
+        <div class="finish-actions">
+          <button id="tool-primary" class="action-card primary" type="button">
+            <span class="action-icon">▣</span>
+            <span>打开 Codex</span>
+          </button>
+          <button id="tool-ccswitch" class="action-card" type="button">
+            <span class="action-icon">✳</span>
+            <span>打开 CC Switch</span>
+          </button>
+        </div>
+
+        <div class="panel ready-card">
+          <div class="server-icon">≡</div>
+          <div>
+            <div class="ready-title">模型配置已完成，可直接测试：你好</div>
+            <div class="ready-copy">供应商：Agnes-AI　　模型：agnes-2.0-flash</div>
+          </div>
+          <div class="ready-badge">已就绪</div>
+        </div>
+
+        <div id="support-panel" class="panel support-panel">
+          <div class="support-layout">
+            <div>
+              <h2>更多支持</h2>
+              <div id="support-actions" class="support-list"></div>
+            </div>
+            <div id="support-qr" class="support-qr hidden">
+              <img id="support-qr-img" alt="支持作者二维码">
+              <div>支持作者</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="failure-view" class="panel failure-card hidden">
+        <h1>安装未完成</h1>
+        <p id="failure-message" class="lead">请查看失败原因和日志。</p>
+        <div id="store-action" class="alert-inline hidden" style="margin-top:16px">
+          Codex AI客户端需要通过 Microsoft Store 安装。你可以先打开 Store 手动安装，再回到安装器重试。
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div id="status-text" class="status-text">点击开始安装 Codex</div>
+      <button id="btn-store" class="btn hidden" type="button">打开 Microsoft Store</button>
+      <button id="btn-log" class="btn" type="button">查看安装日志</button>
+      <button id="btn-retry" class="btn hidden" type="button">重试</button>
+      <button id="btn-start" class="btn btn-primary" type="button">开始安装</button>
+    </footer>
+  </div>
+
+  <script>
+    const STEP_IDS = ['preflight', 'deps', 'target', 'ccswitch', 'agnes', 'verify']
+    const STEP_ALIAS = { winget: 'deps' }
+    const STEP_DEFAULT_MSG = {
+      preflight: '等待检查',
+      deps: '等待安装',
+      target: '等待安装',
+      ccswitch: '等待安装',
+      agnes: '等待配置',
+      verify: '等待验证'
+    }
+    const SUPPORT_ICONS = {
+      github: 'GH',
+      tutorial: '文',
+      contact: '@'
+    }
+    const stepMap = Object.fromEntries(STEP_IDS.map(id => [id, document.getElementById(`step-${id}`)]))
+
+    let isInstalling = false
+    let lastFailureAction = ''
+
+    const views = {
+      welcome: document.getElementById('welcome-view'),
+      progress: document.getElementById('progress-view'),
+      finish: document.getElementById('finish-view'),
+      failure: document.getElementById('failure-view')
+    }
+
+    const statusText = document.getElementById('status-text')
+    const startBtn = document.getElementById('btn-start')
+    const retryBtn = document.getElementById('btn-retry')
+    const logBtn = document.getElementById('btn-log')
+    const storeBtn = document.getElementById('btn-store')
+    const logEl = document.getElementById('log')
+    const currentAction = document.getElementById('current-action')
+    const progressFill = document.getElementById('progress-fill')
+    const progressValue = document.getElementById('progress-value')
+    const progressCaption = document.getElementById('progress-caption')
+    const failureMessage = document.getElementById('failure-message')
+    const storeAction = document.getElementById('store-action')
+    const supportPanel = document.getElementById('support-panel')
+    const supportActions = document.getElementById('support-actions')
+    const supportQr = document.getElementById('support-qr')
+    const supportQrImg = document.getElementById('support-qr-img')
+
+    function normalizeStepId(id) {
+      return STEP_ALIAS[id] || id
+    }
+
+    function setProgress(percent, caption) {
+      const safePercent = Math.max(0, Math.min(100, Math.round(percent)))
+      progressFill.style.width = `${safePercent}%`
+      progressValue.textContent = `${safePercent}%`
+      if (caption) progressCaption.textContent = caption
+    }
+
+    function updateProgressForStep(id, state, message) {
+      const normalizedId = normalizeStepId(id)
+      const index = STEP_IDS.indexOf(normalizedId)
+      if (index < 0) return
+      let percent = (index / STEP_IDS.length) * 100
+      if (state === 'done') percent = ((index + 1) / STEP_IDS.length) * 100
+      if (state === 'active') percent += 9
+      if (state === 'error') percent += 6
+      setProgress(percent, message || progressCaption.textContent)
+    }
+
+    function showInitialViews() {
+      views.welcome.classList.remove('hidden')
+      views.progress.classList.add('hidden')
+      views.finish.classList.add('hidden')
+      views.failure.classList.add('hidden')
+      startBtn.classList.remove('hidden')
+      startBtn.disabled = false
+      startBtn.textContent = '开始安装'
+      retryBtn.classList.add('hidden')
+      storeBtn.classList.add('hidden')
+      statusText.textContent = '点击开始安装 Codex'
+    }
+
+    function showProgress() {
+      views.welcome.classList.add('hidden')
+      views.finish.classList.add('hidden')
+      views.failure.classList.add('hidden')
+      views.progress.classList.remove('hidden')
+    }
+
+    function showFailure(message, action) {
+      views.welcome.classList.add('hidden')
+      views.progress.classList.add('hidden')
+      views.finish.classList.add('hidden')
+      views.failure.classList.remove('hidden')
+      failureMessage.textContent = message || '安装失败，请查看日志。'
+      lastFailureAction = action || ''
+      storeAction.classList.toggle('hidden', action !== 'open-store')
+      storeBtn.classList.toggle('hidden', action !== 'open-store')
+      retryBtn.classList.remove('hidden')
+      startBtn.classList.add('hidden')
+      statusText.textContent = '安装失败'
+      currentAction.textContent = '安装未完成，请查看失败原因'
+      progressCaption.textContent = '安装未完成，请查看日志'
+      isInstalling = false
+    }
+
+    function showFinish(payload) {
+      views.welcome.classList.add('hidden')
+      views.progress.classList.add('hidden')
+      views.finish.classList.remove('hidden')
+      views.failure.classList.add('hidden')
+      startBtn.classList.add('hidden')
+      retryBtn.classList.add('hidden')
+      storeBtn.classList.toggle('hidden', !payload.targetWarning)
+      statusText.textContent = '安装完成，可打开 Codex 输入“你好”测试'
+      setProgress(100, '安装完成')
+      isInstalling = false
+
+    }
+
+    function setStepState(id, state, message) {
+      const normalizedId = normalizeStepId(id)
+      const el = stepMap[normalizedId]
+      if (!el) return
+      el.className = `step ${state || ''}`
+      if (message) el.querySelector('.step-msg').textContent = message
+      const dot = el.querySelector('.dot')
+      if (state === 'done') dot.textContent = '✓'
+      else if (state === 'error' || state === 'warn') dot.textContent = '!'
+      else dot.textContent = String(STEP_IDS.indexOf(normalizedId) + 1)
+      updateProgressForStep(normalizedId, state, message)
+    }
+
+    function resetSteps() {
+      STEP_IDS.forEach((id, index) => {
+        const el = stepMap[id]
+        el.className = 'step'
+        el.querySelector('.dot').textContent = String(index + 1)
+        el.querySelector('.step-msg').textContent = STEP_DEFAULT_MSG[id]
+      })
+      logEl.innerHTML = ''
+      currentAction.textContent = '准备开始安装'
+      lastFailureAction = ''
+      storeBtn.classList.add('hidden')
+      setProgress(0, '准备开始安装')
+    }
+
+    function appendLog(line, isError) {
+      if (!line) return
+      const div = document.createElement('div')
+      div.textContent = line
+      if (isError) div.className = 'err'
+      logEl.appendChild(div)
+      logEl.scrollTop = logEl.scrollHeight
+    }
+
+    function startInstall() {
+      if (isInstalling) return
+      isInstalling = true
+      resetSteps()
+      showProgress()
+      statusText.textContent = '安装中，请不要关闭窗口'
+      startBtn.disabled = true
+      retryBtn.classList.add('hidden')
+      startBtn.classList.remove('hidden')
+      startBtn.textContent = '安装中'
+      window.installer.startInstall('codex')
+    }
+
+    function makeSupportRow(item) {
+      const button = document.createElement('button')
+      button.className = 'support-row'
+      button.type = 'button'
+      if (!item.clickable) button.disabled = true
+
+      const icon = document.createElement('div')
+      icon.className = 'support-icon'
+      icon.textContent = SUPPORT_ICONS[item.id] || '·'
+
+      const text = document.createElement('div')
+      const title = document.createElement('div')
+      title.className = 'support-title'
+      title.textContent = item.label || item.id
+      const detail = document.createElement('div')
+      detail.className = 'support-detail'
+      detail.textContent = item.detail || (item.pending ? '待审核通过' : '')
+      text.appendChild(title)
+      text.appendChild(detail)
+
+      button.appendChild(icon)
+      button.appendChild(text)
+      if (item.clickable) {
+        button.addEventListener('click', () => window.installer.openSupportLink(item.id))
+      }
+      return button
+    }
+
+    function renderSupportInfo(info) {
+      const links = (info && info.links) || []
+      supportActions.innerHTML = ''
+      links.forEach(item => supportActions.appendChild(makeSupportRow(item)))
+
+      if (info && info.donationQr) {
+        supportQrImg.src = info.donationQr
+        supportQr.classList.remove('hidden')
+      } else {
+        supportQr.classList.add('hidden')
+      }
+
+      supportPanel.classList.toggle('hidden', !supportActions.children.length && !(info && info.donationQr))
+    }
+
+    startBtn.addEventListener('click', startInstall)
+    retryBtn.addEventListener('click', showInitialViews)
+    logBtn.addEventListener('click', () => window.installer.openLog())
+    storeBtn.addEventListener('click', () => window.installer.openStore())
+
+    document.getElementById('tool-primary').addEventListener('click', () => {
+      window.installer.openTool('codex')
+    })
+
+    document.getElementById('tool-ccswitch').addEventListener('click', () => {
+      window.installer.openTool('ccswitch')
+    })
+
+    window.installer.on('step-start', ({ id, label }) => {
+      setStepState(id, 'active', label || '进行中')
+      currentAction.textContent = label || '正在安装'
+      progressCaption.textContent = label || '正在安装'
+      appendLog(`> ${label || id}`)
+    })
+
+    window.installer.on('step-done', ({ id, message }) => {
+      setStepState(id, 'done', message || '完成')
+      currentAction.textContent = message || '当前步骤完成'
+      progressCaption.textContent = message || '当前步骤完成'
+      appendLog(`✓ ${message || id}`)
+    })
+
+    window.installer.on('step-warn', ({ id, message }) => {
+      setStepState(id, 'warn', message || '有提示')
+      currentAction.textContent = message || '安装过程中有提示'
+      progressCaption.textContent = message || '安装过程中有提示'
+      appendLog(`! ${message || id}`)
+    })
+
+    window.installer.on('log-line', ({ line, status }) => {
+      appendLog(line, status === 'error')
+    })
+
+    window.installer.on('step-error', ({ id, message, action }) => {
+      if (id) setStepState(id, 'error', message || '失败')
+      appendLog(`ERROR ${message || '安装失败'}`, true)
+      showFailure(message, action)
+      startBtn.disabled = false
+      startBtn.textContent = '开始安装'
+    })
+
+    window.installer.on('install-done', payload => {
+      showFinish(payload || {})
+      startBtn.disabled = false
+      startBtn.textContent = '开始安装'
+    })
+
+    window.installer.on('tool-not-found', ({ hint }) => {
+      statusText.textContent = hint || '未找到工具，请从开始菜单打开。'
+    })
+
+    window.installer.on('support-link-result', ({ message }) => {
+      if (message) statusText.textContent = message
+    })
+
+    window.installer.getSupportInfo().then(renderSupportInfo).catch(() => renderSupportInfo({}))
+    showInitialViews()
+  </script>
+</body>
+</html>
