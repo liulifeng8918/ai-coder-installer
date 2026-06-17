@@ -51,7 +51,12 @@
 
 ![安装完成](docs/step3-done.png)
 
-如果 Codex 无法自动安装，通常是 Microsoft Store / winget 源不可用。可以先修复 Microsoft Store，或按安装器提示打开 Store 手动安装 Codex，再回到安装器继续配置。
+#### 步骤四：和 Codex 第一次对话
+打开 Codex 后，在输入框里发送 `你好`，看到模型回复「你好，你是谁」之类的内容，就说明 Codex 已经接上 Agnes-2.0-Flash 模型了。
+
+![Codex 已运行](docs/step4-codex-running.png)
+
+好的，看到 Codex 回复你的信息就全部完成了！恭喜你已经打开了 AI 新世界的大门！
 
 ## 项目主页与教程
 
