@@ -30,9 +30,15 @@
 
 1. 下载最新的 `AI-Coder-Installer-*.exe`。
 2. 双击打开。
-3. 点击 `开始安装`。
+3. 点击 `开始安装`，安装器会先做环境检测与依赖准备。
 4. 安装完成后点击 `打开 Codex`。
 5. 在 Codex 里输入 `你好` 测试模型是否可用。
+
+### 安装流程预览
+
+| 步骤一：准备安装 | 步骤二：正在安装 | 步骤三：安装完成 |
+| :---: | :---: | :---: |
+| ![步骤一](docs/step1-prepare.png) | ![步骤二](docs/step2-installing.png) | ![步骤三](docs/step3-done.png) |
 
 如果 Codex 无法自动安装，通常是 Microsoft Store / winget 源不可用。可以先修复 Microsoft Store，或按安装器提示打开 Store 手动安装 Codex，再回到安装器继续配置。
 
