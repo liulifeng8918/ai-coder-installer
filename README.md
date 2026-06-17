@@ -36,9 +36,20 @@
 
 ### 安装流程预览
 
-| 步骤一：准备安装 | 步骤二：正在安装 | 步骤三：安装完成 |
-| :---: | :---: | :---: |
-| ![步骤一](docs/step1-prepare.png) | ![步骤二](docs/step2-installing.png) | ![步骤三](docs/step3-done.png) |
+#### 步骤一：准备安装
+打开安装器后，工具会自动检查 Windows 环境和网络状态，点击开始安装即可。
+
+![准备安装](docs/step1-prepare.png)
+
+#### 步骤二：正在安装
+工具会按顺序安装 Codex AI 客户端、CC Switch 路由工具，并写入 Agnes-AI 模型配置。
+
+![正在安装](docs/step2-installing.png)
+
+#### 步骤三：安装完成
+全部组件安装就绪，点击「打开 Codex」即可使用。第一次启动后在 Codex 里输入 `你好` 测试模型。如果需要更换大模型，可以打开CC Switch进行更换。
+
+![安装完成](docs/step3-done.png)
 
 如果 Codex 无法自动安装，通常是 Microsoft Store / winget 源不可用。可以先修复 Microsoft Store，或按安装器提示打开 Store 手动安装 Codex，再回到安装器继续配置。
 
